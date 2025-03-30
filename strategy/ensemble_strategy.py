@@ -3,8 +3,9 @@ import backtrader as bt
 import numpy as np
 import pandas as pd
 import json
-import datetime from datetime
+from datetime import datetime
 import joblib
+from utils.bot_logger import log_signal, update_portfolio
 from tensorflow.keras.models import load_model
 
 class EnsembleStrategy(bt.Strategy):
@@ -47,8 +48,20 @@ class EnsembleStrategy(bt.Strategy):
         ### Estrategia combinada
         if rf_signal == 1 and lstm_signal == 1 and not self.position:
             self.buy()
+            log_signal("BUY", current_price, predicted_price, "EnsembleStrategy")
+
         elif rf_signal == 0 and lstm_signal == 0 and self.position:
             self.close()
+            log_signal("SELL", current_price, predicted_price, "EnsembleStrategy")
+        else:
+            log_signal("HOLD", current_price, predicted_price, "EnsembleStrategy")
+
+        # Actualizar estado del portafolio en cada paso
+        update_portfolio(
+            cash=self.broker.get_cash(),
+            position=self.position.size,
+            portfolio_value=self.broker.get_value()
+        )
 
     def log_signal(signal_type, price, prediction):
         row = {
