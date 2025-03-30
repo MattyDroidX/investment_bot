@@ -3,6 +3,8 @@ from data.data_loader import download_data
 from models.lstm_model import train_lstm_model
 from strategy.lstm_strategy import LSTMStrategy
 import backtrader as bt
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 def run_lstm_backtest():
     data = download_data("AAPL", "2018-01-01", "2023-01-01")

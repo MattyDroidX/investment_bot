@@ -4,6 +4,8 @@ from models.lstm_model import train_lstm_model
 from models.ml_model import create_features, train_model
 from strategy.ensemble_strategy import EnsembleStrategy
 import backtrader as bt
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 def run_ensemble_backtest():
     data = download_data("AAPL", "2018-01-01", "2023-01-01")
